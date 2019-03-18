@@ -20,6 +20,16 @@ export class WebAppService {
      return this.http.get<any>(this.url+"/google/userData?id="+id);
   }
 
+  setUser(id){
+    console.log(id);
+     return this.http.get<any>(this.url+"/google/logout?id="+id);
+  }
+
+  getStatus(id){
+    console.log(id);
+     return this.http.get<any>(this.url+"/google/status?id="+id);
+  }
+
   setCurrentUser(userinfo)
   { 
     return this.http.post(this.url+"/database/api/SaveUser",userinfo);

@@ -10,7 +10,8 @@ const Schema=mongo.Schema;
 let EmployeesSchema=new Schema({
     id:{type:String},
     name:{type:String},
-    address:{type:String}
+    address:{type:String},
+   
 }, {verionKey:false});
 
 // router.get("/api/getUser",function(req,res){

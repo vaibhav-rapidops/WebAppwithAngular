@@ -7,7 +7,9 @@ const Schema=mongo.Schema;
 let UsersSchema=new Schema({
   email:{type:String},
   displayName:{type:String},
-  image:{type:String}
+  image:{type:String},
+  currentstatus:{type:Boolean},
+
 },{verionKey:false});
 let UserModel=mongo.model('users',UsersSchema,'users');
 
@@ -53,7 +55,7 @@ router.get('/',(req,res,next)=>{
 
 
 router.get('/userinfo',async (req,res,next)=>{
-	  const code=req.query.code;
+	const code=req.query.code;
 	try{
       const {tokens} = await oauth2Client.getToken(code);
        oauth2Client.setCredentials(tokens);
@@ -62,31 +64,35 @@ router.get('/userinfo',async (req,res,next)=>{
 
        plus.people.get({userId: 'me',personFields:'displayName'}, (err, result) => {
        if (err) return console.log('The API returned an error: ' + err); 
-        const user={
-         email:result.data.emails[0].value,
-         displayName:result.data.displayName,
-         image:result.data.image.url,
-           }
-           UserModel.findOne({email:user.email},function(err,data){   
-           if(err) return console.log(error);
-           const id=data._id
+            const user={
+            email:result.data.emails[0].value,
+            displayName:result.data.displayName,
+            image:result.data.image.url,
+            currentstatus:true,
+            }
+         
+           UserModel.findOneAndUpdate({email:user.email},{ $set:{currentstatus:true}},function(err,data){   
+           if(err) return console.log(err);
            if(!data){
                 let usermodel=new UserModel(user); 
-                       usermodel.save(function(err,r){
+                    usermodel.save(function(err,res){
                     if(err) return res.send(err);
-                    if(err) return res.send(err);
+                    const  id=res._id;
+                    console.log(id);
                     console.log("record has been inserted!");
+                    res.status(200).redirect('http://localhost:4200/home?id='+id);
                      });
                   }else{
-            console.log("record already inserted!");
+                  const id=data._id;
+                   console.log("record already inserted!");
+
+                   res.status(200).redirect('http://localhost:4200/home?id='+id);
               }
   
-    res.status(200).redirect('http://localhost:4200/home?id='+id);
+  
    });
 });
-   }
-
-  catch(error){
+   }catch(error){
   console.log(error);}
 
 });
@@ -102,33 +108,29 @@ router.get('/userData',(req,res,next)=>{
          
   });
 
+  router.get('/logout',(req,res,next)=>{
+    console.log(req.query.id);
+    UserModel.findByIdAndUpdate(req.query.id,{$set:{currentstatus:'false'}},function(err,data){   
+      if(err) return console.log(err);
+    console.log(data);
+    data.currentstatus=false;
+    res.send({data:data});
+    });
+
+});
+
+
+router.get("/status",function(req,res){
+  const userid=req.query.id;
+  console.log(userid);
+
+  UserModel.findOne({_id:userid},function(error,data){
+     if(error) return res.send(error);
+     console.log(data);
+     res.send({data:data});
+ })
+});
   
 
-
-// router.get('/userData',(req,res,next)=>{
-//  	 const tokens=localstorage.get("access_token");
-//      oauth2Client.setCredentials(tokens);
-//      let userDetail=[];
-     
-//        const service = google.people({version: 'v1', auth:oauth2Client});
-//        service.people.connections.list({resourceName: 'people/me',personFields:'names,phoneNumbers'},(error,result)=>{
-//        if(error) return console.log(error);
-//        let userData=result.data.connections;
-//        if(userData){
-//          	userData.forEach(people=>{
-//        		    if((people.names && people.names.length>0) && (people.phoneNumbers && people.phoneNumbers.length>0)){
-
-//                 userDetail.push({
-//                 	personName:people.names[0].displayName,
-//                     contectNo: people.phoneNumbers[0].value
-//                    })  
-//                }});
-//         }
-      
-//           res.send({userDetail:userDetail});
-
-
-//      });
-// });
 
 module.exports=router;
