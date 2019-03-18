@@ -10,6 +10,7 @@ import { EmployeeComponent } from './components/employee/employee.component';
 import {FormsModule  } from "@angular/forms";
 import { CommonModule } from '@angular/common';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { UserIdleModule } from 'angular-user-idle';
 @NgModule({
   declarations: [
     AppComponent,
@@ -25,6 +26,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    UserIdleModule.forRoot({idle:0, timeout: 10, ping: 10})
   
   ],
   providers: [],

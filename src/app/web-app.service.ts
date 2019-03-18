@@ -1,12 +1,35 @@
-import { Injectable } from '@angular/core';
+import { Injectable ,HostListener, ViewChild} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import { UserIdleService } from 'angular-user-idle';
+import { Subject} from 'rxjs/Subject';
+import { HomeComponent } from './components/home/home.component';
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class WebAppService {
 
-  constructor(private http:HttpClient) { }
+
+  private componentMethodCallSource = new Subject<any>();
+  
+  // Observable string streams
+  componentMethodCalled$ = this.componentMethodCallSource.asObservable();
+
+  // Service message commands
+  callComponentMethod() {
+    this.componentMethodCallSource.next();
+  }
+
+
+
+  constructor(private userIdle: UserIdleService,private http:HttpClient) {
+         this.userIdle.onTimerStart().subscribe(count => console.log(count))
+         this.userIdle.onTimeout().subscribe(() => {  
+          this.callComponentMethod();
+         console.log('Time is up!')
+      })
+    }
 
   url="http://localhost:3000";
   
@@ -52,5 +75,21 @@ update(data){
 delete(id){
   return this.http.post(this.url+'/database/api/deleteEmployee',id);
 }
+ 
 
+stop() {
+  this.userIdle.stopTimer();
+}
+
+stopWatching() {
+  this.userIdle.stopWatching();
+}
+
+startWatching() {
+  this.userIdle.startWatching();
+}
+
+restart() {
+  this.userIdle.resetTimer();
+}
 }

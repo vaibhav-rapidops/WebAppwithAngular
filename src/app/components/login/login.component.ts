@@ -17,8 +17,8 @@ constructor(private webAppService:WebAppService) { }
   const path="google"
   this.webAppService.createUser(path).subscribe(
        (res:any)=>{
-        window.location.href=res.url;
-       },
+        window.location.href=res.url; 
+      },
         error=>{ console.log(error);}
         )
  

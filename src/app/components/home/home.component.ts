@@ -1,38 +1,41 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,Injectable ,HostListener, Output} from '@angular/core';
 import { WebAppService } from 'src/app/web-app.service';
 import { User } from 'src/app/models/user';
 import { ActivatedRoute ,Router} from '@angular/router';
-import { async } from 'q';
+
+import { UserIdleService } from 'angular-user-idle';
+import { Subject } from 'rxjs';
+
 @Component({    
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
+
 export class HomeComponent implements OnInit {
+
+  private HomeComponent = new Subject<any>();
   userData:any;
   user:any;
   currentuser:any;
   id=null;
   check:any
   currentid:string;
-  constructor(private webAppService:WebAppService,private router:Router,private route:ActivatedRoute) { 
+ 
+
+  constructor(private userIdle: UserIdleService,private webAppService:WebAppService,private router:Router,private route:ActivatedRoute) { 
+
     this.route.queryParams
     .subscribe(params => {
       console.log(params); 
       this.id = params.id;
       console.log(this.id); 
     });
-
     if(this.id){
         localStorage.setItem("id",this.id );
         this.id=localStorage.getItem("id");
         console.log(this.id);
         this.checkstatus(this.id);
-        //console.log(checkuser);
-        // if(!this.check){
-        //   this.router.navigate(['/login']);
-        // }
-   
     }else{
       const currentid=localStorage.getItem("id");
       if(currentid){
@@ -40,18 +43,25 @@ export class HomeComponent implements OnInit {
           console.log(currentid);
           console.log(this.id);
           this.checkstatus(this.id);
-       
-       
-      }else{
+        }else{
       this.router.navigate(['/login']);
       }
     }
- 
 
+    
   }
   ngOnInit() {
     this.userInfo();
+    console.log('start');
+    this.userIdle.startWatching();
+    this.webAppService.componentMethodCalled$.subscribe(
+      () => {
+         this.onLogout();
+      }
+    );
   }
+
+
   userInfo(){
     this.webAppService.getUser(this.id).subscribe(
       res=>{
@@ -69,13 +79,12 @@ export class HomeComponent implements OnInit {
   }
 
 
-  onLogout(){
+onLogout(){
    localStorage.removeItem("id");
    this.webAppService.setUser(this.id).subscribe(res=>{
     if(!res.data.currentstatus){
       this.router.navigate(['/login']);
     }
-     
    });
    
    
@@ -92,6 +101,7 @@ export class HomeComponent implements OnInit {
 
 
 }
+
 
   
 }
