@@ -15,7 +15,7 @@ constructor(private webAppService:WebAppService) { }
   
  onGoogleAPI(){
   const path="google"
-  this.webAppService.getUser(path).subscribe(
+  this.webAppService.createUser(path).subscribe(
        (res:any)=>{
         window.location.href=res.url;
        },
@@ -26,7 +26,7 @@ constructor(private webAppService:WebAppService) { }
  
    onFaceBookAPI(){
      const path="facebook";
-    this.webAppService.getUser(path).subscribe(
+    this.webAppService.createUser(path).subscribe(
      (res:any)=>{
      console.log(res.url);
      window.location.href=res.url;
