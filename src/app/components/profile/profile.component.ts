@@ -13,7 +13,7 @@ export class ProfileComponent implements OnInit {
   currentuser:any;
   id:any
   constructor(private homeComponent:HomeComponent,private router:Router) {
-    this.currentuser=sessionStorage.getItem("email");
+    this.currentuser=localStorage.getItem("email");
     this.id=this.currentuser;
     if(!this.currentuser){
          this.router.navigate(['/login']);

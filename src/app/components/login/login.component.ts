@@ -14,7 +14,7 @@ constructor(private webAppService:WebAppService) { }
 
   
  onGoogleAPI(){
-  const path="google"
+  const path="login"
   this.webAppService.createUser(path).subscribe(
        (res:any)=>{
         window.location.href=res.url; 

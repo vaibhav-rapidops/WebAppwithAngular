@@ -20,7 +20,7 @@ export class EmployeeComponent implements OnInit {
   currentuser:any;
   id:any;
   constructor(private modalService: BsModalService,private webAppService :WebAppService,private router:Router) {
-    this.currentuser=sessionStorage.getItem("email");
+    this.currentuser=localStorage.getItem("email");
     this.id=this.currentuser;
     if(!this.currentuser){
          this.router.navigate(['/login']);
@@ -65,6 +65,7 @@ export class EmployeeComponent implements OnInit {
        }
 
         this.user.id=this.currentuser;
+       
         this.webAppService.post(this.user).subscribe(res=>{
          this.getEmployee(this.user.id);
          this.modalRef.hide();
@@ -75,6 +76,7 @@ export class EmployeeComponent implements OnInit {
        )
   }
   onUpdate(){
+
     this.webAppService.update(this.editUser).subscribe(
       res=>{
       this.getEmployee(this.id);
@@ -87,15 +89,14 @@ export class EmployeeComponent implements OnInit {
 
 
   onDelete(){
-      this.webAppService.delete(this.deleteId).subscribe(
+  
+      this.webAppService.delete(this.deleteId.id).subscribe(
         res=>{
         this.getEmployee(this.id);
         this.modalRef.hide();
         },error=>{
           console.log(error);
-        })
-  
-    
+        })  
   }
 
 }

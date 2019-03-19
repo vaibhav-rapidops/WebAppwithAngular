@@ -5,6 +5,7 @@ import { ActivatedRoute ,Router} from '@angular/router';
 
 import { UserIdleService } from 'angular-user-idle';
 import { Subject } from 'rxjs';
+import { async } from 'q';
 
 @Component({    
   selector: 'app-home',
@@ -54,12 +55,16 @@ export class HomeComponent implements OnInit {
     this.userInfo();
     console.log('start');
     this.userIdle.startWatching();
-    this.webAppService.componentMethodCalled$.subscribe(
-      () => {
-         this.onLogout();
-      }
-    );
+  //    this.webAppService.homeComponent$.subscribe(
+  //  async () => {
+  //      console.log("bye")
+  //     await this.onLogout();
+  //   }
+  // );
+
+
   }
+
 
 
   userInfo(){
@@ -70,7 +75,7 @@ export class HomeComponent implements OnInit {
         if(this.userData){
         this.user=new User(this.userData.email,this.userData.displayName,this.userData.image);
         console.log(this.user.email);
-       sessionStorage.setItem("email",this.user.email);
+        localStorage.setItem("email",this.user.email);
         this.check=true;
         console.log(this.user)}
         error=>{console.log(error)};
@@ -80,11 +85,12 @@ export class HomeComponent implements OnInit {
 
 
 onLogout(){
-   localStorage.removeItem("id");
+   localStorage.clear();
    this.webAppService.setUser(this.id).subscribe(res=>{
-    if(!res.data.currentstatus){
+   if(!res.data.currentstatus){
+     console.log(res.data);
       this.router.navigate(['/login']);
-    }
+  }
    });
    
    

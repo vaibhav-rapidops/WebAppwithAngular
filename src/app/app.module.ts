@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule,HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HomeComponent } from './components/home/home.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { EmployeeComponent } from './components/employee/employee.component';
@@ -11,6 +11,8 @@ import {FormsModule  } from "@angular/forms";
 import { CommonModule } from '@angular/common';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { UserIdleModule } from 'angular-user-idle';
+import { WebAppInterceptor } from './interceptors/web-app.interceptor';
+ 
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,7 +22,7 @@ import { UserIdleModule } from 'angular-user-idle';
     EmployeeComponent
   ],
   imports: [
-    FormsModule,
+  FormsModule,
     CommonModule,
     ModalModule.forRoot(),
     BrowserModule,
@@ -29,7 +31,13 @@ import { UserIdleModule } from 'angular-user-idle';
     UserIdleModule.forRoot({idle:0, timeout: 10, ping: 10})
   
   ],
-  providers: [],
+
+  providers: [
+  {  provide: HTTP_INTERCEPTORS,
+    useClass: WebAppInterceptor,
+    multi: true
+  }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

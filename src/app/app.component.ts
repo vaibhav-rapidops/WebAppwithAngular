@@ -11,19 +11,6 @@ import { WebAppService } from 'src/app/web-app.service'
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  @ViewChild (HomeComponent)
-  private homeComponent:HomeComponent; 
-  constructor(private userIdle:UserIdleService,private webAppService:WebAppService){
-    
-  }
-  @HostListener('click', ['$event']) onClick(event){
-    this.webAppService.restart();
-    console.log('component is clicked');
-    console.log(event);
-
-  }
-
-
   title = 'AngularWebApp';
 
   
