@@ -7,9 +7,9 @@ let mongo=require('mongoose');
 const localstorage= require('local-storage');
 
 const config={
-  CLIENT_ID:"161830841145-citdi0a9ne9pe14il7rsa8q9ka8q2d9p.apps.googleusercontent.com",
-  CLIENT_SECRET:"xLVfkxcY8SoRkhUxMuDVhD7R",
-  REDIRECT_URL:"http://localhost:3000/login/userInfo"}
+  CLIENT_ID:"",
+  CLIENT_SECRET:"",
+  REDIRECT_URL:""}
   const scopes = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/contacts.readonly',
